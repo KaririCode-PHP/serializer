@@ -1,0 +1,46 @@
+{
+    "name": "kariricode/serializer",
+    "description": "Multi-format serialization engine for PHP 8.4+ — JSON, XML, CSV, QueryString, #[Serialize] attributes, zero dependencies. ARFA 1.3.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "serializer",
+        "serialization",
+        "json",
+        "xml",
+        "csv",
+        "php84",
+        "kariricode",
+        "arfa"
+    ],
+    "authors": [
+        {
+            "name": "Walmir Silva",
+            "email": "community@kariricode.org"
+        }
+    ],
+    "homepage": "https://kariricode.org",
+    "require": {
+        "php": "^8.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "KaririCode\\Serializer\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "KaririCode\\Serializer\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true
+    },
+    "support": {
+        "issues": "https://github.com/KaririCode-Framework/kariricode-serializer/issues",
+        "source": "https://github.com/KaririCode-Framework/kariricode-serializer"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
