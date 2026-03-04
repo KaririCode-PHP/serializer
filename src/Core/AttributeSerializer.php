@@ -4,17 +4,32 @@ declare(strict_types=1);
 
 namespace KaririCode\Serializer\Core;
 
+use KaririCode\PropertyInspector\AttributeAnalyzer;
+use KaririCode\PropertyInspector\Utility\PropertyInspector;
 use KaririCode\Serializer\Attribute\Serialize;
 use KaririCode\Serializer\Result\SerializationResult;
 
 /**
  * Serializes objects to format strings using #[Serialize] attributes.
  *
- * Combines with Normalizer for full object→string pipeline.
+ * Uses kariricode/property-inspector for attribute scanning.
+ * Properties WITHOUT #[Serialize] are included automatically (using property
+ * name as the wire name) — only `#[Serialize(ignore: true)]` omits one.
+ *
+ * @package KaririCode\Serializer\Core
+ * @author  Walmir Silva <walmir.silva@kariricode.org>
+ * @since   3.2.0 ARFA 1.3
  */
 final readonly class AttributeSerializer
 {
-    public function __construct(private SerializerEngine $engine) {}
+    private PropertyInspector $inspector;
+
+    public function __construct(private SerializerEngine $engine)
+    {
+        $this->inspector = new PropertyInspector(
+            new AttributeAnalyzer(Serialize::class),
+        );
+    }
 
     /**
      * Serialize an object to a string.
@@ -23,24 +38,15 @@ final readonly class AttributeSerializer
      */
     public function serialize(object $object, ?string $format = null, array $groups = []): SerializationResult
     {
-        $ref = new \ReflectionClass($object);
-        $data = [];
+        $handler = new SerializeAttributeHandler($groups);
 
-        foreach ($ref->getProperties() as $property) {
-            $attrs = $property->getAttributes(Serialize::class);
-            $attr = $attrs !== [] ? $attrs[0]->newInstance() : null;
+        /** @var SerializeAttributeHandler $handler */
+        $handler = $this->inspector->inspect($object, $handler);
 
-            if ($attr?->ignore) { continue; }
+        // Include properties WITHOUT #[Serialize] using their property name
+        $this->includeUnannotatedProperties($object, $handler);
 
-            if ($groups !== [] && $attr !== null && $attr->groups !== []) {
-                if (array_intersect($groups, $attr->groups) === []) { continue; }
-            }
-
-            $wireName = $attr?->name ?? $property->getName();
-            try { $data[$wireName] = $property->getValue($object); } catch (\Error) { $data[$wireName] = null; }
-        }
-
-        return $this->engine->serialize($data, $format);
+        return $this->engine->serialize($handler->getProcessedPropertyValues(), $format);
     }
 
     /**
@@ -54,34 +60,58 @@ final readonly class AttributeSerializer
     {
         $data = $this->engine->deserialize($payload, $format);
 
+        // Scan a proto-instance to build wire→property name map
         $ref = new \ReflectionClass($class);
-        $object = $ref->newInstanceWithoutConstructor();
-        $nameMap = $this->buildNameMap($ref);
+        /** @var T $proto */
+        $proto = $ref->newInstanceWithoutConstructor();
 
+        $handler = new SerializeAttributeHandler();
+
+        /** @var SerializeAttributeHandler $handler */
+        $handler = $this->inspector->inspect($proto, $handler);
+        $nameMap = $handler->getNameMap();
+
+        $object = $ref->newInstanceWithoutConstructor();
+
+        $resolved = [];
         foreach ($data as $wireName => $value) {
             $propName = $nameMap[$wireName] ?? $wireName;
-            if ($ref->hasProperty($propName)) {
-                $ref->getProperty($propName)->setValue($object, $value);
-            }
+            $resolved[$propName] = $value;
         }
 
+        $handler->setProcessedValues($resolved);
+        $handler->applyChanges($object);
+
+        /** @var T $object */
         return $object;
     }
 
-    /** @return array<string, string> wireName→propertyName */
-    private function buildNameMap(\ReflectionClass $ref): array
+    /**
+     * Includes properties that have no #[Serialize] attribute using their property
+     * name as the wire name (unless already handled by the handler or skipped via ignore).
+     */
+    private function includeUnannotatedProperties(object $object, SerializeAttributeHandler $handler): void
     {
-        $map = [];
+        $ref = new \ReflectionClass($object);
+        // Exclude ALL annotated properties (handled + ignored + group-filtered)
+        $evaluatedProps = $handler->getEvaluatedProperties();
+
         foreach ($ref->getProperties() as $property) {
-            $attrs = $property->getAttributes(Serialize::class);
-            if ($attrs !== []) {
-                /** @var Serialize $attr */
-                $attr = $attrs[0]->newInstance();
-                if ($attr->name !== null) {
-                    $map[$attr->name] = $property->getName();
-                }
+            $propName = $property->getName();
+
+            // Skip any property that had #[Serialize] on it (already processed)
+            if (in_array($propName, $evaluatedProps, strict: true)) {
+                continue;
             }
+
+            // Include with property name as wire name
+            try {
+                $value = $property->getValue($object);
+            } catch (\Error) {
+                $value = null;
+            }
+
+            $handler->addUnannotatedProperty($propName, $value);
         }
-        return $map;
     }
 }
