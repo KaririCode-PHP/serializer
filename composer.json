@@ -1,6 +1,6 @@
 {
     "name": "kariricode/serializer",
-    "description": "Multi-format serialization engine for PHP 8.4+ — JSON, XML, CSV, QueryString, #[Serialize] attributes, zero dependencies. ARFA 1.3.",
+    "description": "Multi-format serialization engine for PHP 8.4+ — JSON, XML, CSV, QueryString, #[Serialize] attributes, powered by kariricode/property-inspector. ARFA 1.3.",
     "type": "library",
     "license": "MIT",
     "keywords": [
@@ -21,7 +21,8 @@
     ],
     "homepage": "https://kariricode.org",
     "require": {
-        "php": "^8.4"
+        "php": "^8.4",
+        "kariricode/property-inspector": "^2.0"
     },
     "autoload": {
         "psr-4": {
