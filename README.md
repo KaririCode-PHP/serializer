@@ -228,8 +228,8 @@ src/
 
 | Metric | Value |
 |---|---|
-| PHP source files | 19 |
-| Source lines | ~720 |
+| PHP source files | 20 |
+| Source lines | ~810 |
 | Test files | 13 |
 | Test lines | ~700 |
 | External runtime dependencies | 1 (kariricode/property-inspector) |
