@@ -31,6 +31,6 @@ final class InMemoryEncoderRegistryTest extends TestCase
     public function testUnknownThrows(): void
     {
         $this->expectException(SerializationException::class);
-        (new InMemoryEncoderRegistry())->resolve('msgpack');
+        new InMemoryEncoderRegistry()->resolve('msgpack');
     }
 }

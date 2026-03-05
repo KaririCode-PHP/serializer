@@ -11,7 +11,7 @@ final class FullPipelineTest extends TestCase
 {
     public function testAllFormatsRoundtrip(): void
     {
-        $engine = (new SerializerServiceProvider())->createEngine();
+        $engine = new SerializerServiceProvider()->createEngine();
 
         // JSON
         $json = $engine->serialize(['x' => 'hello'], 'json');
@@ -28,7 +28,7 @@ final class FullPipelineTest extends TestCase
 
     public function testCsvRoundtrip(): void
     {
-        $engine = (new SerializerServiceProvider())->createEngine();
+        $engine = new SerializerServiceProvider()->createEngine();
         $data = [['id' => '1', 'name' => 'A'], ['id' => '2', 'name' => 'B']];
 
         $csv = $engine->serialize($data, 'csv');

@@ -11,7 +11,7 @@ final class SerializerServiceProviderTest extends TestCase
 {
     public function testRegistersAll4Formats(): void
     {
-        $registry = (new SerializerServiceProvider())->createRegistry();
+        $registry = new SerializerServiceProvider()->createRegistry();
         $formats = $registry->formats();
         $this->assertCount(4, $formats);
         foreach (['json', 'xml', 'csv', 'query_string'] as $fmt) {

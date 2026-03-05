@@ -12,7 +12,7 @@ final class AttributeSerializerTest extends TestCase
 {
     public function testSerializeWithNameMapping(): void
     {
-        $dto = new class {
+        $dto = new class () {
             #[Serialize(name: 'first_name')]
             public string $firstName = 'Walmir';
 
@@ -25,7 +25,7 @@ final class AttributeSerializerTest extends TestCase
             public string $email = 'walmir@kariricode.org';
         };
 
-        $serializer = (new SerializerServiceProvider())->createAttributeSerializer();
+        $serializer = new SerializerServiceProvider()->createAttributeSerializer();
         $result = $serializer->serialize($dto, 'json');
 
         $decoded = json_decode($result->getPayload(), true);
@@ -37,7 +37,7 @@ final class AttributeSerializerTest extends TestCase
 
     public function testSerializeWithGroups(): void
     {
-        $dto = new class {
+        $dto = new class () {
             #[Serialize(groups: ['public', 'api'])]
             public string $name = 'Walmir';
 
@@ -45,7 +45,7 @@ final class AttributeSerializerTest extends TestCase
             public string $secret = 'hidden';
         };
 
-        $serializer = (new SerializerServiceProvider())->createAttributeSerializer();
+        $serializer = new SerializerServiceProvider()->createAttributeSerializer();
         $result = $serializer->serialize($dto, 'json', ['public']);
 
         $decoded = json_decode($result->getPayload(), true);
@@ -56,7 +56,7 @@ final class AttributeSerializerTest extends TestCase
     public function testDeserializeWithNameMapping(): void
     {
         $json = '{"first_name":"Walmir","last_name":"Silva","email":"w@k.org"}';
-        $serializer = (new SerializerServiceProvider())->createAttributeSerializer();
+        $serializer = new SerializerServiceProvider()->createAttributeSerializer();
         $obj = $serializer->deserialize($json, SerializerTestDto::class, 'json');
 
         $this->assertSame('Walmir', $obj->firstName);

@@ -12,7 +12,7 @@ final class SerializerEngineTest extends TestCase
 {
     public function testJsonRoundtrip(): void
     {
-        $engine = (new SerializerServiceProvider())->createEngine();
+        $engine = new SerializerServiceProvider()->createEngine();
         $data = ['name' => 'Walmir', 'age' => 30, 'tags' => ['php', 'arfa']];
 
         $result = $engine->serialize($data, 'json');
@@ -25,7 +25,7 @@ final class SerializerEngineTest extends TestCase
 
     public function testJsonPrettyPrint(): void
     {
-        $engine = (new SerializerServiceProvider())->createEngine(
+        $engine = new SerializerServiceProvider()->createEngine(
             new SerializerConfiguration(prettyPrint: true),
         );
         $result = $engine->serialize(['a' => 1], 'json');
@@ -34,7 +34,7 @@ final class SerializerEngineTest extends TestCase
 
     public function testXmlRoundtrip(): void
     {
-        $engine = (new SerializerServiceProvider())->createEngine();
+        $engine = new SerializerServiceProvider()->createEngine();
         $data = ['name' => 'Walmir', 'city' => 'Juazeiro'];
 
         $result = $engine->serialize($data, 'xml');
@@ -47,7 +47,7 @@ final class SerializerEngineTest extends TestCase
 
     public function testCsvRoundtrip(): void
     {
-        $engine = (new SerializerServiceProvider())->createEngine();
+        $engine = new SerializerServiceProvider()->createEngine();
         $data = [
             ['id' => '1', 'name' => 'Alice'],
             ['id' => '2', 'name' => 'Bob'],
@@ -63,7 +63,7 @@ final class SerializerEngineTest extends TestCase
 
     public function testQueryStringRoundtrip(): void
     {
-        $engine = (new SerializerServiceProvider())->createEngine();
+        $engine = new SerializerServiceProvider()->createEngine();
         $data = ['page' => '1', 'per_page' => '20', 'sort' => 'name'];
 
         $result = $engine->serialize($data, 'query_string');
@@ -76,7 +76,7 @@ final class SerializerEngineTest extends TestCase
 
     public function testDefaultFormat(): void
     {
-        $engine = (new SerializerServiceProvider())->createEngine(
+        $engine = new SerializerServiceProvider()->createEngine(
             new SerializerConfiguration(defaultFormat: 'xml'),
         );
         $result = $engine->serialize(['a' => '1']);
