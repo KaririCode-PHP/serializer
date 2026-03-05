@@ -88,14 +88,13 @@ final readonly class XmlEncoder implements Encoder
 
         foreach ($children as $key => $child) {
             $value = $child->count() > 0 ? $this->xmlToArray($child) : (string) $child;
-            $keyStr = $key;
-            if (isset($result[$keyStr])) {
-                if (! \is_array($result[$keyStr]) || ! isset($result[$keyStr][0])) {
-                    $result[$keyStr] = [$result[$keyStr]];
+            if (isset($result[$key])) {
+                if (! \is_array($result[$key]) || ! isset($result[$key][0])) {
+                    $result[$key] = [$result[$key]];
                 }
-                $result[$keyStr][] = $value;
+                $result[$key][] = $value;
             } else {
-                $result[$keyStr] = $value;
+                $result[$key] = $value;
             }
         }
 

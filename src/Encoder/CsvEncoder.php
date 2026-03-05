@@ -15,11 +15,6 @@ use KaririCode\Serializer\Exception\SerializationException;
  */
 final readonly class CsvEncoder implements Encoder
 {
-    private function str(mixed $value, string $default): string
-    {
-        return \is_string($value) ? $value : $default;
-    }
-
     /** @param array<mixed> $data */
     #[\Override]
     public function encode(array $data, SerializationContext $context): string
@@ -28,8 +23,10 @@ final readonly class CsvEncoder implements Encoder
             return '';
         }
 
-        $separator = $this->str($context->getParameter('separator'), ',');
-        $enclosure = $this->str($context->getParameter('enclosure'), '"');
+        $separatorParam = $context->getParameter('separator');
+        $enclosureParam = $context->getParameter('enclosure');
+        $separator = \is_string($separatorParam) ? $separatorParam : ',';
+        $enclosure = \is_string($enclosureParam) ? $enclosureParam : '"';
         $hasHeader = (bool) $context->getParameter('header', true);
 
         $stream = fopen('php://temp', 'r+');
@@ -62,8 +59,10 @@ final readonly class CsvEncoder implements Encoder
     #[\Override]
     public function decode(string $payload, SerializationContext $context): array
     {
-        $separator = $this->str($context->getParameter('separator'), ',');
-        $enclosure = $this->str($context->getParameter('enclosure'), '"');
+        $separatorParam = $context->getParameter('separator');
+        $enclosureParam = $context->getParameter('enclosure');
+        $separator = \is_string($separatorParam) ? $separatorParam : ',';
+        $enclosure = \is_string($enclosureParam) ? $enclosureParam : '"';
         $hasHeader = (bool) $context->getParameter('header', true);
 
         $lines = array_filter(
