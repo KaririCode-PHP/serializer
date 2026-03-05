@@ -8,6 +8,15 @@ use KaririCode\Serializer\Contract\Encoder;
 use KaririCode\Serializer\Contract\EncoderRegistry;
 use KaririCode\Serializer\Exception\SerializationException;
 
+/**
+ * In-memory encoder registry backed by a plain PHP array.
+ *
+ * Throws SerializationException on duplicate registration or unknown format lookup.
+ *
+ * @package KaririCode\Serializer\Core
+ * @author  Walmir Silva <walmir.silva@kariricode.org>
+ * @since   3.1.0 ARFA 1.3
+ */
 final class InMemoryEncoderRegistry implements EncoderRegistry
 {
     /** @var array<string, Encoder> */
