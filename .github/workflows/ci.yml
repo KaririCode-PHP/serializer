@@ -42,8 +42,8 @@ jobs:
       - name: Initialize devkit (.kcode/ generation)
         run: kcode init
 
-      # Disable beStrictAboutCoverageMetadata to avoid warnings from exception classes
-      # that extend native RuntimeException (not a target for code coverage tracking).
+      # Patch generated phpunit.xml.dist — beStrictAboutCoverageMetadata causes false
+      # "not a valid target" warnings for classes extending vendor base classes
       - name: Patch phpunit.xml.dist
         run: |
           sed -i 's/beStrictAboutCoverageMetadata="true"/beStrictAboutCoverageMetadata="false"/' .kcode/phpunit.xml.dist
