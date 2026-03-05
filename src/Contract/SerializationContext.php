@@ -14,10 +14,14 @@ namespace KaririCode\Serializer\Contract;
 interface SerializationContext
 {
     public function getFormat(): string;
+
     public function getParameter(string $key, mixed $default = null): mixed;
+
     /** @return array<string, mixed> */
     public function getParameters(): array;
+
     public function withFormat(string $format): static;
+
     /** @param array<string, mixed> $parameters */
     public function withParameters(array $parameters): static;
 }

@@ -26,6 +26,7 @@ final class SerializerServiceProvider
         $registry->register(new Encoder\XmlEncoder());
         $registry->register(new Encoder\CsvEncoder());
         $registry->register(new Encoder\QueryStringEncoder());
+
         return $registry;
     }
 

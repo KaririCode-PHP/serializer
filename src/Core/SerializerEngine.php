@@ -6,7 +6,6 @@ namespace KaririCode\Serializer\Core;
 
 use KaririCode\Serializer\Configuration\SerializerConfiguration;
 use KaririCode\Serializer\Contract\EncoderRegistry;
-use KaririCode\Serializer\Contract\SerializationContext;
 use KaririCode\Serializer\Result\SerializationResult;
 
 /**
@@ -23,7 +22,8 @@ final class SerializerEngine
     public function __construct(
         private readonly EncoderRegistry $registry,
         private readonly ?SerializerConfiguration $configuration = null,
-    ) {}
+    ) {
+    }
 
     /**
      * Serialize array data to a string in the given format.
@@ -46,6 +46,7 @@ final class SerializerEngine
         }
 
         $payload = $encoder->encode($data, $ctx);
+
         return new SerializationResult($data, $payload, $fmt);
     }
 

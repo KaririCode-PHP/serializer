@@ -15,12 +15,21 @@ use KaririCode\Serializer\Exception\SerializationException;
  */
 final readonly class CsvEncoder implements Encoder
 {
+    private function str(mixed $value, string $default): string
+    {
+        return \is_string($value) ? $value : $default;
+    }
+
+    /** @param array<mixed> $data */
+    #[\Override]
     public function encode(array $data, SerializationContext $context): string
     {
-        if ($data === []) { return ''; }
+        if ($data === []) {
+            return '';
+        }
 
-        $separator = (string) $context->getParameter('separator', ',');
-        $enclosure = (string) $context->getParameter('enclosure', '"');
+        $separator = $this->str($context->getParameter('separator'), ',');
+        $enclosure = $this->str($context->getParameter('enclosure'), '"');
         $hasHeader = (bool) $context->getParameter('header', true);
 
         $stream = fopen('php://temp', 'r+');
@@ -29,12 +38,15 @@ final readonly class CsvEncoder implements Encoder
         }
 
         $firstRow = reset($data);
-        if ($hasHeader && is_array($firstRow)) {
-            fputcsv($stream, array_keys($firstRow), $separator, $enclosure);
+        if ($hasHeader && \is_array($firstRow)) {
+            /** @var array<int|string, string> $keys */
+            $keys = array_keys($firstRow);
+            fputcsv($stream, $keys, $separator, $enclosure);
         }
 
         foreach ($data as $row) {
-            if (is_array($row)) {
+            if (\is_array($row)) {
+                /** @var array<int|string, bool|float|int|string|null> $row */
                 fputcsv($stream, $row, $separator, $enclosure);
             }
         }
@@ -46,25 +58,54 @@ final readonly class CsvEncoder implements Encoder
         return $output !== false ? $output : '';
     }
 
+    /** @return array<mixed> */
+    #[\Override]
     public function decode(string $payload, SerializationContext $context): array
     {
-        $separator = (string) $context->getParameter('separator', ',');
-        $enclosure = (string) $context->getParameter('enclosure', '"');
+        $separator = $this->str($context->getParameter('separator'), ',');
+        $enclosure = $this->str($context->getParameter('enclosure'), '"');
         $hasHeader = (bool) $context->getParameter('header', true);
 
-        $lines = array_filter(explode("\n", str_replace("\r\n", "\n", $payload)), static fn (string $l) => trim($l) !== '');
-        if ($lines === []) { return []; }
+        $lines = array_filter(
+            explode("\n", str_replace("\r\n", "\n", $payload)),
+            static fn (string $l) => trim($l) !== '',
+        );
 
-        $rows = array_map(static fn (string $line) => str_getcsv($line, $separator, $enclosure), $lines);
+        if ($lines === []) {
+            return [];
+        }
 
-        if ($hasHeader && count($rows) > 1) {
-            $headers = array_shift($rows);
-            return array_map(static fn (array $row) => array_combine($headers, array_pad($row, count($headers), '')), $rows);
+        $rows = array_values(
+            array_map(static fn (string $line) => str_getcsv($line, $separator, $enclosure), $lines),
+        );
+
+        if ($hasHeader && \count($rows) > 1) {
+            /** @var list<string|null> $rawHeaders */
+            $rawHeaders = array_shift($rows);
+            $headers = array_map(static fn (string|null $v): string => (string) $v, $rawHeaders);
+
+            /** @var array<string, mixed> $result */
+            $result = [];
+            foreach ($rows as $row) {
+                $padded = array_pad($row, \count($headers), '');
+                $result[] = array_combine($headers, $padded);
+            }
+
+            return $result;
         }
 
         return $rows;
     }
 
-    public function supports(string $format): bool { return $format === 'csv'; }
-    public function getFormat(): string { return 'csv'; }
+    #[\Override]
+    public function supports(string $format): bool
+    {
+        return $format === 'csv';
+    }
+
+    #[\Override]
+    public function getFormat(): string
+    {
+        return 'csv';
+    }
 }

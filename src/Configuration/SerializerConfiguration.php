@@ -9,5 +9,6 @@ final readonly class SerializerConfiguration
     public function __construct(
         public string $defaultFormat = 'json',
         public bool $prettyPrint = false,
-    ) {}
+    ) {
+    }
 }

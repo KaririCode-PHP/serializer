@@ -12,7 +12,8 @@ final readonly class ProcessorBridge
     public function __construct(
         private SerializerEngine $engine,
         private string $format = 'json',
-    ) {}
+    ) {
+    }
 
     /** @param array<string, mixed> $data */
     public function process(array $data): SerializationResult

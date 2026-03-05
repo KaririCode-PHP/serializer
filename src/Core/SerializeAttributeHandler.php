@@ -43,12 +43,14 @@ final class SerializeAttributeHandler implements PropertyAttributeHandler, Prope
     /**
      * @param list<string> $groups Active groups filter (empty = all groups).
      */
-    public function __construct(private readonly array $groups = []) {}
+    public function __construct(private readonly array $groups = [])
+    {
+    }
 
     #[\Override]
     public function handleAttribute(string $propertyName, object $attribute, mixed $value): mixed
     {
-        if (!$attribute instanceof Serialize) {
+        if (! $attribute instanceof Serialize) {
             return null;
         }
 
@@ -58,6 +60,7 @@ final class SerializeAttributeHandler implements PropertyAttributeHandler, Prope
         // Track ignored properties so the serializer can avoid including them
         if ($attribute->ignore) {
             $this->ignoredProperties[] = $propertyName;
+
             return null;
         }
 
@@ -145,7 +148,7 @@ final class SerializeAttributeHandler implements PropertyAttributeHandler, Prope
     {
         foreach ($this->processedValues as $property => $value) {
             try {
-                (new PropertyAccessor($object, $property))->setValue($value);
+                new PropertyAccessor($object, $property)->setValue($value);
             } catch (\ReflectionException) {
                 // Property doesn't exist — skip silently
             }

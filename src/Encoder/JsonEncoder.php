@@ -10,6 +10,8 @@ use KaririCode\Serializer\Exception\SerializationException;
 
 final readonly class JsonEncoder implements Encoder
 {
+    /** @param array<mixed> $data */
+    #[\Override]
     public function encode(array $data, SerializationContext $context): string
     {
         $flags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR;
@@ -24,16 +26,32 @@ final readonly class JsonEncoder implements Encoder
         }
     }
 
+    /** @return array<mixed> */
+    #[\Override]
     public function decode(string $payload, SerializationContext $context): array
     {
         try {
             $result = json_decode($payload, true, 512, JSON_THROW_ON_ERROR);
-            return is_array($result) ? $result : throw new \JsonException('Root must be object or array.');
+            if (! \is_array($result)) {
+                throw new \JsonException('Root must be object or array.');
+            }
+
+            /** @var array<string, mixed> $result */
+            return $result;
         } catch (\JsonException $e) {
             throw SerializationException::decodingFailed('json', $e->getMessage());
         }
     }
 
-    public function supports(string $format): bool { return $format === 'json'; }
-    public function getFormat(): string { return 'json'; }
+    #[\Override]
+    public function supports(string $format): bool
+    {
+        return $format === 'json';
+    }
+
+    #[\Override]
+    public function getFormat(): string
+    {
+        return 'json';
+    }
 }

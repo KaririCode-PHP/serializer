@@ -100,7 +100,7 @@ final readonly class AttributeSerializer
             $propName = $property->getName();
 
             // Skip any property that had #[Serialize] on it (already processed)
-            if (in_array($propName, $evaluatedProps, strict: true)) {
+            if (\in_array($propName, $evaluatedProps, strict: true)) {
                 continue;
             }
 

@@ -17,5 +17,6 @@ final readonly class Serialize
         public ?string $name = null,
         public array $groups = [],
         public bool $ignore = false,
-    ) {}
+    ) {
+    }
 }

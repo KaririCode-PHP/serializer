@@ -15,10 +15,10 @@ namespace KaririCode\Serializer\Contract;
  */
 interface Encoder
 {
-    /** @param array<string, mixed> $data */
+    /** @param array<mixed> $data */
     public function encode(array $data, SerializationContext $context): string;
 
-    /** @return array<string, mixed> */
+    /** @return array<mixed> */
     public function decode(string $payload, SerializationContext $context): array;
 
     public function supports(string $format): bool;
