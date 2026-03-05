@@ -8,6 +8,16 @@ use KaririCode\Serializer\Contract\Encoder;
 use KaririCode\Serializer\Contract\SerializationContext;
 use KaririCode\Serializer\Exception\SerializationException;
 
+/**
+ * Encodes/decodes arrays as application/xml via SimpleXMLElement + DOMDocument.
+ *
+ * Uses `libxml_use_internal_errors` to suppress PHP notices on malformed XML decode.
+ * Supports `root` and `pretty` context parameters.
+ *
+ * @package KaririCode\Serializer\Encoder
+ * @author  Walmir Silva <walmir.silva@kariricode.org>
+ * @since   3.1.0 ARFA 1.3
+ */
 final readonly class XmlEncoder implements Encoder
 {
     /** @param array<mixed> $data */

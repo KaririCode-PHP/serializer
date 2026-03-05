@@ -6,6 +6,16 @@ namespace KaririCode\Serializer\Core;
 
 use KaririCode\Serializer\Contract\SerializationContext;
 
+/**
+ * Immutable serialization context carrying the active format and parameters.
+ *
+ * Uses the named-constructor pattern: instantiate via `SerializationContextImpl::create()`.
+ * `withFormat()` and `withParameters()` return new instances (full immutability).
+ *
+ * @package KaririCode\Serializer\Core
+ * @author  Walmir Silva <walmir.silva@kariricode.org>
+ * @since   3.1.0 ARFA 1.3
+ */
 final readonly class SerializationContextImpl implements SerializationContext
 {
     /**

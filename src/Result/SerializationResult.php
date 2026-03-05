@@ -7,6 +7,7 @@ namespace KaririCode\Serializer\Result;
 /**
  * Immutable result of a serialization pass.
  *
+ * @package KaririCode\Serializer\Result
  * @author  Walmir Silva <walmir.silva@kariricode.org>
  * @since   3.1.0 ARFA 1.3
  */
