@@ -9,9 +9,13 @@ use KaririCode\Serializer\Contract\SerializationContext;
 use KaririCode\Serializer\Exception\SerializationException;
 
 /**
- * Encodes/decodes flat arrays-of-arrays as CSV.
+ * Encodes/decodes flat arrays-of-arrays as RFC 4180-compliant CSV via php://temp.
  *
  * Parameters: separator (string, ','), enclosure (string, '"'), header (bool, true).
+ *
+ * @package KaririCode\Serializer\Encoder
+ * @author  Walmir Silva <walmir.silva@kariricode.org>
+ * @since   3.1.0 ARFA 1.3
  */
 final readonly class CsvEncoder implements Encoder
 {
@@ -38,13 +42,13 @@ final readonly class CsvEncoder implements Encoder
         if ($hasHeader && \is_array($firstRow)) {
             /** @var array<int|string, string> $keys */
             $keys = array_keys($firstRow);
-            fputcsv($stream, $keys, $separator, $enclosure);
+            fputcsv($stream, $keys, $separator, $enclosure, escape: '\\');
         }
 
         foreach ($data as $row) {
             if (\is_array($row)) {
                 /** @var array<int|string, bool|float|int|string|null> $row */
-                fputcsv($stream, $row, $separator, $enclosure);
+                fputcsv($stream, $row, $separator, $enclosure, escape: '\\');
             }
         }
 
@@ -75,7 +79,7 @@ final readonly class CsvEncoder implements Encoder
         }
 
         $rows = array_values(
-            array_map(static fn (string $line) => str_getcsv($line, $separator, $enclosure), $lines),
+            array_map(static fn (string $line) => str_getcsv($line, $separator, $enclosure, escape: '\\'), $lines),
         );
 
         if ($hasHeader && \count($rows) > 1) {
