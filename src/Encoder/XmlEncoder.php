@@ -39,11 +39,20 @@ final readonly class XmlEncoder implements Encoder
     #[\Override]
     public function decode(string $payload, SerializationContext $context): array
     {
+        // Suppress PHP warnings emitted by SimpleXMLElement before throwing on invalid XML.
+        // Without this, `new SimpleXMLElement('not xml')` emits 3 PHP notices that CI
+        // treats as test-suite warnings (exit code 1 even with failOnWarning=false).
+        $prevErrors = libxml_use_internal_errors(true);
+
         try {
             $xml = new \SimpleXMLElement($payload, LIBXML_NOCDATA);
+            libxml_use_internal_errors($prevErrors);
 
             return $this->xmlToArray($xml);
         } catch (\Throwable $e) {
+            libxml_use_internal_errors($prevErrors);
+            libxml_clear_errors();
+
             throw SerializationException::decodingFailed('xml', $e->getMessage());
         }
     }
