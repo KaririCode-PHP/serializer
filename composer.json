@@ -1,6 +1,6 @@
 {
     "name": "kariricode/serializer",
-    "description": "Multi-format serialization engine for PHP 8.4+ — JSON, XML, CSV, QueryString, #[Serialize] attributes, powered by kariricode/property-inspector. ARFA 1.3.",
+    "description": "Multi-format serialization engine for PHP 8.4+ \u2014 JSON, XML, CSV, QueryString, #[Serialize] attributes, powered by kariricode/property-inspector. ARFA 1.3.",
     "type": "library",
     "license": "MIT",
     "keywords": [
@@ -11,12 +11,15 @@
         "csv",
         "php84",
         "kariricode",
-        "arfa"
+        "arfa",
+        "property-inspector"
     ],
     "authors": [
         {
             "name": "Walmir Silva",
-            "email": "community@kariricode.org"
+            "email": "walmir.silva@kariricode.org",
+            "homepage": "https://github.com/walmir-silva",
+            "role": "Lead Developer"
         }
     ],
     "homepage": "https://kariricode.org",
@@ -40,8 +43,24 @@
     },
     "support": {
         "issues": "https://github.com/KaririCode-Framework/kariricode-serializer/issues",
-        "source": "https://github.com/KaririCode-Framework/kariricode-serializer"
+        "source": "https://github.com/KaririCode-Framework/kariricode-serializer",
+        "docs": "https://github.com/KaririCode-Framework/kariricode-serializer/blob/develop/README.md",
+        "security": "https://github.com/KaririCode-Framework/kariricode-serializer/security/advisories/new",
+        "forum": "https://github.com/orgs/KaririCode-Framework/discussions"
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/walmir-silva"
+        }
+    ],
+    "extra": {
+        "arfa": {
+            "level": 1,
+            "conformance": "Structural (P1, P4, P5)",
+            "version": "1.3"
+        }
+    }
 }
