@@ -44,7 +44,7 @@
     "support": {
         "issues": "https://github.com/KaririCode-Framework/kariricode-serializer/issues",
         "source": "https://github.com/KaririCode-Framework/kariricode-serializer",
-        "docs": "https://github.com/KaririCode-Framework/kariricode-serializer/blob/develop/README.md",
+        "docs": "https://github.com/KaririCode-PHP/serializer/blob/main/README.md",
         "security": "https://github.com/KaririCode-Framework/kariricode-serializer/security/advisories/new",
         "forum": "https://github.com/orgs/KaririCode-Framework/discussions"
     },
